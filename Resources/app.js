@@ -20,20 +20,43 @@ if (Ti.version < 1.8) {
 	//determine platform and form factor and render approproate components
 	var osname = Ti.Platform.osname, version = Ti.Platform.version, height = Ti.Platform.displayCaps.platformHeight, width = Ti.Platform.displayCaps.platformWidth;
 
+	var Cloud = require('ti.cloud');
+	Cloud.debug = true;
+	// optional; if you add this line, set it to false for production
+
+	// login user
+	Cloud.Users.login({
+		login : "sally",
+		password : "1234"
+	}, function(e) {
+		if (e.success) {
+			var user = e.users[0];
+			alert('Logged in! You are now logged in as ' + user.id);
+		} else {
+			error(e);
+			alert(e);
+		}
+	});
+
 	//considering tablet to have one dimension over 900px - this is imperfect, so you should feel free to decide
 	//yourself what you consider a tablet form factor for android
 	var isTablet = osname === 'ipad' || (osname === 'android' && (width > 899 || height > 899));
 
 	var Window;
 	if (isTablet) {
-		Window = require('ui/tablet/ApplicationWindow');
-		new Window().open();
+		//Window = require('ui/tablet/ApplicationWindow');
+		//new Window().open();
+		
+		var NavigationController = require("NavigationController");
+		var HomeView = require("ui/common/HomeView");
+		var controller = new NavigationController();
+		controller.open(new HomeView(controller));
 	} else {
 		var NavigationController = require("NavigationController");
 		var HomeView = require("ui/common/HomeView");
 		var controller = new NavigationController();
 		controller.open(new HomeView(controller));
-		
+
 		//var NewMeetupRequestWindow = require("ui/common/NewMeetupRequestWindow");
 		//controller.open(new NewMeetupRequestWindow(controller));
 	}

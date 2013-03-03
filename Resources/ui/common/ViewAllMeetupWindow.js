@@ -1,30 +1,58 @@
 function ViewAllMeetupWindow(navController) {
+	var Cloud = require('ti.cloud');
+	Cloud.debug = true;
+	
 	var self = Ti.UI.createWindow({
 		backgroundColor : 'white'
 	});
-
-	var tableData = [{
-		title : 'Daniel @ Plaza Sing'
-	}, {
-		title : 'Zi Xin @ SOB:SMU'
-	}, {
-		title : 'Lionel @ Food For Thought'
-	}, {
-		title : 'Joanna @ La La Land'
-	}];
-
+	
 	var table = Ti.UI.createTableView({
-		data : tableData
+		data : [{
+			title : 'Loading, please wait...'
+		}]
 	});
-	
-	self.add(table);
-	
+
 	table.addEventListener('click', function(e) {
 		//alert(e.rowData.id+":"+e.rowData.title);
 		var ViewMeetupWindow = require("ui/common/ViewMeetupWindow");
-		navController.open(new ViewMeetupWindow(navController));
+		var viewMeetupWindow = new ViewMeetupWindow(navController);
+		viewMeetupWindow.fireEvent('meetupSelected', {id : e.row.id});
+		navController.open(viewMeetupWindow);
 	});
 	
+	self.add(table);
+
+	function queryEvents() {
+		Cloud.Events.query(function(e) {
+			if (e.success) {
+				if (e.events.length == 0) {
+					table.setData([{
+						title : 'No events'
+					}]);
+				} else {
+					var data = [];
+					for (var i = 0, l = e.events.length; i < l; i++) {
+						var event = e.events[i];
+						var row = Ti.UI.createTableViewRow({
+							title : event.name,
+							id : event.id
+						});
+						data.push(row);
+					}
+					table.setData(data);
+				}
+			} else {
+				table.setData([{
+					title : (e.error && e.message) || e
+				}]);
+				error(e);
+			}
+		})
+	}
+
+
+	self.addEventListener('open', queryEvents);
+
 	return self;
 };
 

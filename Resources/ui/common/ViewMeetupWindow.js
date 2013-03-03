@@ -1,20 +1,44 @@
 function ViewMeetupWindow(navController) {
+	var Cloud = require('ti.cloud');
+	Cloud.debug = true;
+	
 	var self = Ti.UI.createWindow({
 		layout : 'vertical',
 		backgroundColor : 'white'
 	});
-	
+
+	self.addEventListener('meetupSelected', function(e) {
+		//alert('location selected event');
+		eventId = e.id;
+
+		Cloud.Events.show({
+			event_id : eventId
+		}, function(e) {
+			lblYouAreMeeting.text = "You are meeting " + e.events[0].name;
+			lblDetails.text = "Details: " + e.events[0].details;
+		});
+	});
+
 	var lblYouAreMeeting = Ti.UI.createLabel({
 		color : 'black',
-		text : 'You are meeting Daniel at Plaza Singapura.',
+		text : 'Now Loading...',
 		textAlign : Ti.UI.TEXT_ALIGNMENT_LEFT,
 		width : Ti.UI.FILL,
 		height : Ti.UI.SIZE
 	});
 	self.add(lblYouAreMeeting);
 	
+	var lblDetails = Ti.UI.createLabel({
+		color : 'black',
+		text : 'Details...',
+		textAlign : Ti.UI.TEXT_ALIGNMENT_LEFT,
+		width : Ti.UI.FILL,
+		height : Ti.UI.SIZE
+	});
+	self.add(lblDetails);
+
 	var lblMAP = Ti.UI.createLabel({
-		color : 'grey',
+		color : 'green',
 		text : 'MAP VIEW IS HERE!',
 		textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER,
 		font : {
@@ -25,7 +49,7 @@ function ViewMeetupWindow(navController) {
 		height : Ti.UI.SIZE
 	});
 	self.add(lblMAP);
-	
+
 	var lblStatus = Ti.UI.createLabel({
 		color : 'blue',
 		text : 'Status: Not in Range',
@@ -34,7 +58,7 @@ function ViewMeetupWindow(navController) {
 		height : Ti.UI.SIZE
 	});
 	self.add(lblStatus);
-	
+
 	var lblStatusMsg = Ti.UI.createLabel({
 		color : 'black',
 		text : 'Your friend is not within the specified range. Check back again later!',
@@ -43,7 +67,6 @@ function ViewMeetupWindow(navController) {
 		height : Ti.UI.SIZE
 	});
 	self.add(lblStatusMsg);
-
 
 	var btnEdit = Ti.UI.createButton({
 		title : 'Edit',
