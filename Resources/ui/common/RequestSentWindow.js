@@ -20,7 +20,7 @@ function RequestSentWindow(navController) {
 	
 	var lblRequestSentMsg = Ti.UI.createLabel({
 		color : 'black',
-		text : 'Your request has been sent to Daniel',
+		text : '',
 		textAlign : Ti.UI.TEXT_ALIGNMENT_LEFT,
 		font : {
 			fontWeight : 'bold',
@@ -36,11 +36,19 @@ function RequestSentWindow(navController) {
 		width : Ti.UI.FILL,
 		height : Ti.UI.SIZE
 	});
+	
+	// get event id from CreateNewMeetupWindow
+	var eventId;
+	self.addEventListener('meetupSelected', function(e) {
+		eventId = e.id;
+		lblRequestSentMsg.text = "Your request has been sent to " + e.friendName;
+	});
 
 	btnViewMeetup.addEventListener('click', function() {
-		// Check console
-		Ti.API.info('User clicked the button ');
-		//navController.openFromHome(new TestWindow(navController));
+		var ViewMeetupWindow = require("ui/common/ViewMeetupWindow");
+		var viewMeetupWindow = new ViewMeetupWindow(navController);
+		viewMeetupWindow.fireEvent('meetupSelected', {id : eventId});
+		navController.open(viewMeetupWindow);
 	});
 	self.add(btnViewMeetup);
 	
@@ -50,9 +58,8 @@ function RequestSentWindow(navController) {
 		height : Ti.UI.SIZE
 	});
 
+	// bring user back home
 	btnHome.addEventListener('click', function() {
-		// Check console
-		Ti.API.info('User clicked the button ');
 		navController.home();
 	});
 	self.add(btnHome);

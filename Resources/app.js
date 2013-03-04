@@ -31,7 +31,7 @@ if (Ti.version < 1.8) {
 	}, function(e) {
 		if (e.success) {
 			var user = e.users[0];
-			alert('Logged in! You are now logged in as ' + user.id);
+			//alert('Logged in! You are now logged in as ' + user.id);
 		} else {
 			error(e);
 			alert(e);

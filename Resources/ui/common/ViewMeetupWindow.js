@@ -1,7 +1,7 @@
 function ViewMeetupWindow(navController) {
 	var Cloud = require('ti.cloud');
 	Cloud.debug = true;
-	
+
 	var self = Ti.UI.createWindow({
 		layout : 'vertical',
 		backgroundColor : 'white'
@@ -16,6 +16,36 @@ function ViewMeetupWindow(navController) {
 		}, function(e) {
 			lblYouAreMeeting.text = "You are meeting " + e.events[0].name;
 			lblDetails.text = "Details: " + e.events[0].details;
+
+			addAnno = Titanium.Map.createAnnotation({
+				latitude : e.events[0].place.latitude,
+				longitude : e.events[0].place.longitude,
+				title : e.events[0].place.name,
+				subtitle : e.events[0].place.details,
+				pincolor : Titanium.Map.ANNOTATION_RED,
+				animate : true,
+				draggable : false
+			});
+			mapview.addAnnotation(addAnno);
+			mapview.selectAnnotation(addAnno);
+			annoAdded = true;
+
+			var inRange = e.events[0].custom_fields.inRange;
+
+			if (inRange) {
+				lblStatus.text = "Status: In Range";
+				lblStatusMsg.text = "Your friend is now in range. Proceed to meeting point soon."
+
+				friendAnno = Titanium.Map.createAnnotation({
+					latitude : e.events[0].custom_fields.lat,
+					longitude : e.events[0].custom_fields.lng,
+					title : e.events[0].custom_fields.friendName,
+					pincolor : Titanium.Map.ANNOTATION_BLUE,
+					animate : true,
+					draggable : false
+				});
+				mapview.addAnnotation(friendAnno);
+			}
 		});
 	});
 
@@ -27,7 +57,7 @@ function ViewMeetupWindow(navController) {
 		height : Ti.UI.SIZE
 	});
 	self.add(lblYouAreMeeting);
-	
+
 	var lblDetails = Ti.UI.createLabel({
 		color : 'black',
 		text : 'Details...',
@@ -37,18 +67,21 @@ function ViewMeetupWindow(navController) {
 	});
 	self.add(lblDetails);
 
-	var lblMAP = Ti.UI.createLabel({
-		color : 'green',
-		text : 'MAP VIEW IS HERE!',
-		textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER,
-		font : {
-			fontWeight : 'bold',
-			fontSize : 50
+	var mapview = Titanium.Map.createView({
+		mapType : Titanium.Map.STANDARD_TYPE,
+		region : {
+			latitude : 1.29686,
+			longitude : 103.85220,
+			latitudeDelta : 0.01,
+			longitudeDelta : 0.01
 		},
+		animate : true,
 		width : Ti.UI.FILL,
-		height : Ti.UI.SIZE
+		height : 400,
+		regionFit : false,
+		userLocation : true
 	});
-	self.add(lblMAP);
+	self.add(mapview);
 
 	var lblStatus = Ti.UI.createLabel({
 		color : 'blue',

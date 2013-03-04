@@ -130,9 +130,12 @@ function CreateNewMeetupWindow(navController) {
 		// create new event
 		var eventName = contactsField.value + " @ " + locationField.value;
 		var custom = JSON.stringify({
-			"friendMobile" : friendMobile,
+			"friendName" : contactsField.value,
 			"status" : 0,
-			"time" : 10
+			"time" : 10,
+			"inRange" : false,
+			"lat" : "1.29229",
+			"lng" : "103.84955"
 		});
 		//alert(custom);
 		var data = {
@@ -142,13 +145,14 @@ function CreateNewMeetupWindow(navController) {
 			place_id : locationId,
 			custom_fields : custom
 		};
-		alert(data);
+		//alert(data);
 
 		Cloud.Events.create(data, function(e) {
 			if (e.success) {
-				alert("Created!");
 				var RequestSentWindow = require("ui/common/RequestSentWindow");
-				navController.open(new RequestSentWindow(navController));
+				var requestSentWindow = new RequestSentWindow(navController);
+				requestSentWindow.fireEvent('meetupSelected', {id : e.events[0].id, friendName : contactsField.value});
+				navController.open(requestSentWindow);
 			} else {
 				//error(e);
 				alert(e.toString());
