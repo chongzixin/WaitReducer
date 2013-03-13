@@ -19,24 +19,62 @@ if (Ti.version < 1.8) {
 (function() {
 	//determine platform and form factor and render approproate components
 	var osname = Ti.Platform.osname, version = Ti.Platform.version, height = Ti.Platform.displayCaps.platformHeight, width = Ti.Platform.displayCaps.platformWidth;
-
 	var Cloud = require('ti.cloud');
+	var CloudPush = require('ti.cloudpush');
+	var deviceToken
+	CloudPush.debug = true;
+    CloudPush.enabled = true;
+	CloudPush.showTrayNotificationsWhenFocused = true;
+    CloudPush.focusAppOnPush = false;
 	Cloud.debug = true;
 	// optional; if you add this line, set it to false for production
-
-	// login user
-	Cloud.Users.login({
-		login : "sally",
-		password : "1234"
-	}, function(e) {
-		if (e.success) {
+		CloudPush.retrieveDeviceToken({
+		        success: function deviceTokenSuccess(e) {
+		        alert('Device Token: ' + e.deviceToken);
+		        deviceToken = e.deviceToken
+		        loginDefault();
+		    },
+		        error: function deviceTokenError(e) {
+		            alert('Failed to register for push! ' + e.error);
+			}
+		});
+	
+	
+	function loginDefault(e){
+   	//Create a Default User in Cloud Console, and login
+    Cloud.Users.login({
+        login: 'sally',
+        password: '1234'
+    }, function (e) {
+        if (e.success) {
 			var user = e.users[0];
+<<<<<<< HEAD
 			//alert('Logged in! You are now logged in as ' + user.id);
 		} else {
 			error(e);
+=======
+        	alert("Login success");
+            defaultSubscribe();
+        } else {
+            error(e);
+>>>>>>> week 10 commit
 			alert(e);
-		}
-	});
+            }
+        });
+    }
+    function defaultSubscribe(){
+                Cloud.PushNotifications.subscribe({
+                    channel: 'alert',
+	                device_token: deviceToken,
+	                type: 'android'
+            	}, function (e){
+	                if (e.success) {
+	                   alert('Subscribed for Push Notification!');
+	                }else{
+	                    alert('Error:' +((e.error && e.message) || JSON.stringify(e)));
+	                }
+                });
+    }	
 
 	//considering tablet to have one dimension over 900px - this is imperfect, so you should feel free to decide
 	//yourself what you consider a tablet form factor for android

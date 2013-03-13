@@ -47,7 +47,6 @@ function ViewMeetupWindow(navController) {
 				mapview.addAnnotation(friendAnno);
 			}
 		});
-	});
 
 	var lblYouAreMeeting = Ti.UI.createLabel({
 		color : 'black',
@@ -110,11 +109,14 @@ function ViewMeetupWindow(navController) {
 	btnEdit.addEventListener('click', function() {
 		// Check console
 		Ti.API.info('User clicked the button ');
-		//var RequestSentWindow = require("ui/common/RequestSentWindow");
-		//navController.open(new RequestSentWindow(navController));
+		var EditMeetup = require("ui/common/EditMeetup");
+		var editMeetup = new EditMeetup(navController);	
+		editMeetup.fireEvent('editMeetup', {id : eventId});
+		navController.open(editMeetup);	
 	});
+	
 	self.add(btnEdit);
-
+});
 	return self;
 };
 
