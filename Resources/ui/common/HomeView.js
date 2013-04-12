@@ -1,27 +1,26 @@
 function HomeView(navController) {
 	var self = Ti.UI.createWindow({
 		backgroundColor:'white',
-		layout:'vertical'
+		layout:'vertical',
 	});
 	
 	//label using localization-ready strings from <app dir>/i18n/en/strings.xml
-	var label = Ti.UI.createLabel({
-		color : '#000000',
-		text : 'Wait Reducer Logo',
-		textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER,
-		font : {
-			fontWeight : 'bold',
-			fontSize : 50
-		},
-		height : Ti.UI.SIZE,
-		width : Ti.UI.FILL
+
+	var image = Ti.UI.createImageView({
+  	image:'/images/logo.png'
 	});
-	self.add(label);
+	self.add(image);
+	self.open();
 	
 	var button = Ti.UI.createButton({
-		height: Ti.UI.SIZE,
-		width: Ti.UI.FILL,
-		title:'Create New Meetup'
+		width: 275,
+		top:0,
+		font: { fontSize:25 },
+		backgroundColor: '#003366',
+		color: 'white',
+		borderRadius: 8,
+		height:60,
+		title:'Create New Meetup',
 	});
 	
 	button.addEventListener('click', function() {
@@ -31,9 +30,14 @@ function HomeView(navController) {
 	self.add(button);
 	
 	var btnViewAllMeetups = Ti.UI.createButton({
-		title : 'View All Meet-ups',
-		height: Ti.UI.SIZE,
-		width: Ti.UI.FILL
+		title : 'View All Meetups',
+		top: 50,
+		width: 275,
+		font: { fontSize:25 },
+		backgroundColor: '#003366',
+		color: 'white',
+		height:60,
+		borderRadius: 8,
 	});
 
 	// view all meet ups button

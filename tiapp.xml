@@ -54,5 +54,6 @@
     <modules>
         <module platform="commonjs">ti.cloud</module>
         <module platform="android" version="2.1.0">ti.cloudpush</module>
+        <module version="1.0" platform="android">analytics.google</module>
     </modules>
 </ti:app>

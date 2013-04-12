@@ -6,14 +6,28 @@ function SelectLocationWindow(navController) {
 		backgroundColor : 'white'
 	});
 
+	var search;
+	var searchAsChild = false;
+
+	// Use search bar
+	search = Ti.UI.createSearchBar({
+		hintText : "Search Location"
+	});
+	searchAsChild = true;
+
 	var table = Ti.UI.createTableView({
 		backgroundColor : '#fff',
 		top : 0,
+		search : search,
+		searchAsChild : searchAsChild,
 		bottom : 0
 	});
 
 	table.addEventListener('click', function(evt) {
-		self.fireEvent('locationSelected', {location : evt.row.title, id : evt.row.id});
+		self.fireEvent('locationSelected', {
+			location : evt.row.title,
+			id : evt.row.id
+		});
 		alert(evt.row.id);
 		self.close();
 	});
@@ -35,7 +49,12 @@ function SelectLocationWindow(navController) {
 					for (var i = 0, l = e.places.length; i < l; i++) {
 						data.push(Ti.UI.createTableViewRow({
 							title : e.places[i].name,
-							id : e.places[i].id
+							id : e.places[i].id,
+							font : {
+								fontSize : 20
+							},
+							color : '#003366',
+							height : 65,
 						}));
 					}
 					table.setData(data);
@@ -63,7 +82,11 @@ function SelectLocationWindow(navController) {
 					}]);
 				} else {
 					table.setData([{
-						title : 'Located, looking nearby...'
+						title : 'Located, looking nearby...',
+						font : {
+							fontSize : 20
+						},
+						height : 65,
 					}]);
 					findPlaces(e.coords.latitude, e.coords.longitude);
 				}
@@ -72,13 +95,21 @@ function SelectLocationWindow(navController) {
 			Cloud.Clients.geolocate(function(e) {
 				if (e.success) {
 					table.setData([{
-						title : 'Located, looking nearby...'
+						title : 'Located, looking nearby...',
+						font : {
+							fontSize : 20
+						},
+						height : 65,
 					}]);
 					findPlaces(e.location.latitude, e.location.longitude);
 				} else {
 					findPlaces(null, null);
 					table.setData([{
-						title : 'GPS lost, looking nearby...'
+						title : 'GPS lost, looking nearby...',
+						font : {
+							fontSize : 20
+						},
+						height : 65,
 					}]);
 				}
 			});
